@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+    - "9"
+before_install:
+    - npm install -g codecov
+install:
+    - yarn
+script:
+    - npm run test
+    - npm run report-coverage

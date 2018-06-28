@@ -1,0 +1,5 @@
+TODO: FLESH OUT NICE README, WITH CODE COVERAGE ETC.
+
+[![https://nodei.co/npm/YOUR-MODULE-NAME.png?downloads=true&downloadRank=true&stars=true](https://nodei.co/npm/YOUR-MODULE-NAME.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/YOUR-MODULE-NAME)
+[![Maintainability](https://api.codeclimate.com/v1/badges/c890f2aadbb342cf08df/maintainability)](https://codeclimate.com/github/funkjunky/schemaless-normalizer/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/c890f2aadbb342cf08df/test_coverage)](https://codeclimate.com/github/funkjunky/schemaless-normalizer/test_coverage)

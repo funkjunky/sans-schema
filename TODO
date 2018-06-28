@@ -1,0 +1,54 @@
+TODO
+---
+
+*- research
+    *- how to add coverage badges on github readme (code climate)
+    *- choose unit testing framework (probably just mocha chai)
+
+*- create repo, proper package.json with version, upload to github, add to code climate
+
+*- create first test (.spec.js)
+    *- expandable (easy one)
+
+*- I changed order of args for expandable, so update code. modelName 3rd
+
+*- ensure npm test works as expected
+
+*- fill out index.js with exports of functions from files.
+
+*- Update config example
+
+*- allow single definition for manyToMany
+
+*- add tests (.spec.js)
+    *- forEachM2mRelation
+    *- create definition of correct for flattened data and for expanded data
+    *- flatten
+    *- expand model
+    *- remove model
+	*- I need to remove all 'entities' levels from the state. It should be identical to flattened state.
+	*- fix all main code, so it no longer uses entities
+	*- fix all tests
+
+*- handle reflective data. So if we're given { book: { id: 1, author: { id: 1 } } } then also add { author: { id: 1, book: { id: 1 } } }
+	*- we need to check for the key in existing data, if singular or plural exist, then don't add the key, otherwise add the key. [don't do an overwrite object]
+	*- we need a base person, then have personWithConfig and personNoConfig
+
+*- get travis CI setup for schemaless normalizer
+
+*- get code climate code coverage showing
+
+*- try and get the testing badge url
+
+*- get any other badges that would be neat.
+
+- remove "coverage" the local instanbul code coverage folder	
+
+- publish under a new name "schemaless" is taken :(... find another.
+	- clever short name
+	- beautiful readme with artsy cover image
+	- post on dischord "i-made-this" and on /r/redux and /r/javascript
+
+- When im done, restart my computer for updates
+
+- try and improve the code a bit
