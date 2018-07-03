@@ -1,6 +1,6 @@
 {
   "name": "sans-schema",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "A schemaless data normalizer. Flattens data to enable a single source of truth. Allows exceptions through configuration.",
   "main": "index.js",
   "git": "https://github.com/funkjunky/sans-schema",
