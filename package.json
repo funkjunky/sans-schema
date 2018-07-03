@@ -6,6 +6,7 @@
   "git": "https://github.com/funkjunky/sans-schema",
   "scripts": {
     "test": "nyc mocha --require babel-core/register src/**/*.spec.js",
+    "build": "npx babel ./src -d ./dist --ignore *.spec.js,index.js,sampleData.js",
     "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "babel": {
