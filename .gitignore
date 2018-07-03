@@ -5,3 +5,4 @@ cc-test-reporter
 *.log
 .nyc_output
 coverage.lcov
+.DS_Store

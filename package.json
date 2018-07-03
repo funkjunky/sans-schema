@@ -5,7 +5,7 @@
   "main": "index.js",
   "git": "https://github.com/funkjunky/sans-schema",
   "scripts": {
-    "test": "nyc mocha --require babel-core/register **/*.spec.js",
+    "test": "nyc mocha --require babel-core/register src/**/*.spec.js",
     "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "babel": {
