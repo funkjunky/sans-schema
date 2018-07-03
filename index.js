@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _expandModel = require('./expandModel');
+var _expandModel = require('./dist/expandModel');
 
 Object.defineProperty(exports, 'expandModel', {
   enumerable: true,
@@ -13,7 +13,7 @@ Object.defineProperty(exports, 'expandModel', {
   }
 });
 
-var _flatten = require('./flatten');
+var _flatten = require('./dist/flatten');
 
 Object.defineProperty(exports, 'flatten', {
   enumerable: true,
@@ -22,7 +22,7 @@ Object.defineProperty(exports, 'flatten', {
   }
 });
 
-var _removeModel = require('./removeModel');
+var _removeModel = require('./dist/removeModel');
 
 Object.defineProperty(exports, 'removeModel', {
   enumerable: true,
