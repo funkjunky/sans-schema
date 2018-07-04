@@ -1,7 +1,7 @@
 import chai from 'chai';
 import { modelName, person, personWithConfig, personNoConfig, config, stateNoConfig, stateWithConfig } from './sampleData';
 
-import flatten from '../index.js';
+import flatten from './flatten.js';
 
 var assert = chai.assert;
 
