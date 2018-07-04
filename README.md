@@ -3,8 +3,8 @@
 
 [![Build Status](https://travis-ci.org/funkjunky/schemaless-normalizer.svg?branch=master)](https://travis-ci.org/funkjunky/schemaless-normalizer) [![codecov](https://codecov.io/gh/funkjunky/schemaless-normalizer/branch/master/graph/badge.svg)](https://codecov.io/gh/funkjunky/schemaless-normalizer) [![dependencies](https://david-dm.org/funkjunky/schemaless-normalizer.svg)](https://david-dm.org/funkjunky/schemaless-normalizer) [![dependencies](https://david-dm.org/funkjunky/schemaless-normalizer/dev-status.svg)](https://david-dm.org/funkjunky/schemaless-normalizer?type=dev) [![Maintainability](https://api.codeclimate.com/v1/badges/c890f2aadbb342cf08df/maintainability)](https://codeclimate.com/github/funkjunky/schemaless-normalizer/maintainability) [![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/funkjunky/sans-schema/pulls)
 
-## [Why](#why)- [Getting Started](#getting-started) - [Simplest Use Case](#simplest-use-case) - [Format](#format-of-flattened-data) - [Docs](#function-definitions)
-### [Contributing](#contributing) - [Versioning](#versioning) - [Authors](#authors)
+## [Why](#Why)- [Getting Started](#Getting-Started) - [Simplest Use Case](#Simplest-Use-Case) - [Format](#Format-of-flattened-data) - [Docs](#Function-definitions)
+### [Contributing](#Contributing) - [Versioning](#Versioning) - [Authors](#Authors)
 
 Why?
 ====
@@ -22,7 +22,7 @@ yarn add sans-schema
 import { flatten, expandModel, removeModel } from 'sans-schema';
 ```
 
-Simplest use-case
+simplest use-case
 =================
 
 ```javascript
@@ -47,12 +47,73 @@ What's the deal with loadNormalizedData action...
 
 flatten and removeModel return flattened data that should be merged in your reducers.
 Here is an example reducer:
-< coming soon >
+```javascript
+// Note: You would call this when removing data as well, which well nullify references.
+const loadNormalizedData = data => ({
+    type: 'LOAD_NORMALIZED',
+    data
+});
+const personsReducers = (state, action) => {
+    switch(action.type) {
+        case 'LOAD_NORMALIZED':
+            if (action.data.persons) {
+                //This is a naive impl. You should deep union data, giving priority to action
+                return {
+                    ...state,
+                    ...action.data.persons,
+                };
+            }
+        ...
+    }
+};
+```
 
 Format of flattened data:
 =========================
+This is an example result from ```flatten(modelName, config)(modelInstance);```
+Also see [```sampleData.js``` for examples](https://github.com/funkjunky/sans-schema/blob/master/src/sampleData.js)
 
-~~ to be continued super soon... ~~
+```javascript
+{
+    modelNames: {   // model names must always be plural
+        1: {
+            // note: id is the only required data for EVERY model
+            id: 1,  //the key is the id
+            name: 'hello',  //arbitrary primitives
+            secondModelNames: {
+                id: 3,  //Only the id well be here. expandModel well expand this.
+            },
+        }
+    },
+    secondModelNames: { ... },
+    thirdModelNames: { ... },
+    // Note: modelNames doesn't reference thirdModelNames, yet it's related through this m2m object
+    modelNamesXthirdModelNames: {   //Note, the capital X. Otherwise identical model names
+        modelNames: {
+            1: {
+                id: 1,  //Every model always has an id, even in m2m
+                thirdModelNames: [  //m2m only includes reference instances with ids only
+                    { id: 2 },
+                    { id: 3 },
+                    ...
+                ],
+            }
+            ...
+        },
+        thirdModelNames: {
+            2: {
+                id: 2,
+                modelNames: [
+                    { id: 3 },
+                    ...
+                ],
+            },
+            ...
+        },
+    },
+    ...
+}
+```
 
 Full example with React and Redux
 =================================
