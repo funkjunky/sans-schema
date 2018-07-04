@@ -3,8 +3,8 @@
 
 [![Build Status](https://travis-ci.org/funkjunky/schemaless-normalizer.svg?branch=master)](https://travis-ci.org/funkjunky/schemaless-normalizer) [![codecov](https://codecov.io/gh/funkjunky/schemaless-normalizer/branch/master/graph/badge.svg)](https://codecov.io/gh/funkjunky/schemaless-normalizer) [![dependencies](https://david-dm.org/funkjunky/schemaless-normalizer.svg)](https://david-dm.org/funkjunky/schemaless-normalizer) [![dependencies](https://david-dm.org/funkjunky/schemaless-normalizer/dev-status.svg)](https://david-dm.org/funkjunky/schemaless-normalizer?type=dev) [![Maintainability](https://api.codeclimate.com/v1/badges/c890f2aadbb342cf08df/maintainability)](https://codeclimate.com/github/funkjunky/schemaless-normalizer/maintainability) [![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/funkjunky/sans-schema/pulls)
 
-## [Why](#Why)- [Getting Started](#Getting-Started) - [Simplest Use Case](#Simplest-Use-Case) - [Format](#Format-of-flattened-data) - [Docs](#Function-definitions)
-### [Contributing](#Contributing) - [Versioning](#Versioning) - [Authors](#Authors)
+## [Why](#why)- [Getting Started](#getting-started) - [Simplest Use Case](#simplest-use-case) - [Format](#format-of-flattened-data) - [Docs](#function-definitions)
+### [Contributing](#contributing) - [Versioning](#versioning) - [Authors](#authors)
 
 Why?
 ====
@@ -22,7 +22,7 @@ yarn add sans-schema
 import { flatten, expandModel, removeModel } from 'sans-schema';
 ```
 
-simplest use-case
+Simplest use-case
 =================
 
 ```javascript
