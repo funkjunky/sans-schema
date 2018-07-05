@@ -123,7 +123,50 @@ Full example with React and Redux
 Function definitions
 ====================
 
-< coming s... you get the idea... >
+#### `flatten(modelName, config?)(data) : function`
+Flattens hierarchical data to be placed in a data store representing a single source of truth.
+- `modelName : string (plural form)` - `required` - Specifies which model the object, or array of objects represents.
+- `config : `[`Config Object`](#config) - `optional` - Passed to every function, that defines custom relationships between models.
+- `data : object` - `required` - Hierarchical data to be flattened
+**returns** `object` - flat single-source data.
+
+#### `expandModel(modelName, model, state, deepness?, config?) : function`
+Flattens hierarchical data to be placed in a data store representing a single source of truth.
+- `modelName : string (plural form)` - `required` - Specifies which model the object, or array of objects represents.
+- `model : object` - `required` - The model to be expanded
+- `state : object` - `required` - Single source flattened data (ie. store.getState())
+- `deepness : integer` - `optional` - The depth the model is expanded
+- `config : `[`Config Object`](#config) - `optional` - Passed to every function, that defines custom relationships between models.
+**returns** `object` - Hierarchical data
+
+#### `removeModel(modelName, model, state, config?) : function`
+Searches the state for references of model and nullifies them. This returns the flattened data representing the updated state of models that were changed, to be merged with the original state.
+- `modelName : string (plural form)` - `required` - Specifies which model the object, or array of objects represents.
+- `model : object` - `required` - The model to be expanded
+- `state : object` - `required` - Single source flattened data (ie. store.getState())
+- `config : `[`Config Object`](#config) - `optional` - Passed to every function, that defines custom relationships between models.
+**returns** `object` - flat single-source data
+
+Config
+======
+*All keys in the config object are optional*
+```javascript
+{
+    models: [pluralModelName:string],
+    oneToOne: {
+        subjectModel: [referenceModel:string],
+    }
+    keyToModel: {
+        subjectModel: {
+            referenceKey: referenceModelName:string
+        }
+    },
+    manyToMany: {
+        m2mModelName: [modelName:string, secondModelName:string]
+    },
+};
+```
+Note: You can name your manyToMany relationship whatever you want. In our examples and the tests we combine the names of the two models and put a capital X inbetween them.
 
 Contributing
 ============
