@@ -28,7 +28,7 @@ simplest use-case
 ```javascript
 const data = { id: 1, name: 'Jason', company: { id: 1, city: 'Montreal' } };
 
-const flatData = flatten('users', data);
+const flatData = flatten('users')(data);
 const expandedFlatData = expandModel('users', { id: 1 }, flatData);
 const flatDataSansCompanyWithId1 = removeModel('companies', data.company, flatData);
 
