@@ -79,9 +79,14 @@ exports.default = function (modelName, model, state) {
                 });
                 if (aliasKey) modelKey = aliasKey[0];
             }
-            newModel[modelKey] = state[m2mKey][modelName][model.id][key].map(function (model) {
-                return _expandModel(key, model, deepness - 1);
-            });
+            // If an m2mKey exists, but is empty, then you can end up with one side having zero relations. This check is for that.
+            if (state[m2mKey][modelName][model.id]) {
+                newModel[modelKey] = state[m2mKey][modelName][model.id][key].map(function (model) {
+                    return _expandModel(key, model, deepness - 1);
+                });
+            } else {
+                newModel[modelKey] = [];
+            }
         });
 
         return newModel;
