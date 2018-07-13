@@ -41,7 +41,7 @@ describe('removeModel', () => {
                 persons: {
                     [person.id]: {
                         id: person.id,
-                        hockeyTeams: [{ id: person.favourites[1].id }],
+                        favourites: [{ id: person.favourites[1].id }],
                     },
                 },
             }

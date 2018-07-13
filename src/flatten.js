@@ -42,29 +42,34 @@ export default (modelName, config={}) => data => {
                 const mappedKey = getPropertyTree(keyToModel, key, modelName, key);
                 // if member is an array, then extract all the models into flattened data
                 if (Array.isArray(model[key])) {
-                    // TODO: we should be able to assume a m2m relationship given an array of models, related to an array of models
-                    // The challenge well be remembering this relationship. Because once it's in m2m, the models lose reference to the relationship.
-                    const foundM2m = forEachM2mRelation(mappedKey, manyToMany, (m2mKey, relativeKey) => {
+
+                    const m2mRelation = Object.entries(manyToMany).find(([m2mKey, relations]) => Object.values(relations).includes(key));
+                    if (m2mRelation) {
+                        const m2mKey = m2mRelation[0];
+                        // Note: this is a bit of a mind fuck... we want the key for the value that is NOT the key we provided. Because m2m key points to the referenced key alias.
+                        // persons: favourites
+                        // hockeyTeams: fans
+                        // We have "favourites", we need hockeyTeams, which is what favourites represents and we need fans, which is the alias for persons.
+                        const [m2mRelatedModelName, m2mModelAlias] = Object.entries(m2mRelation[1]).find(([k, v]) => v !== key);
                         if (!result[m2mKey]) result[m2mKey] = {};
-                        if (!result[m2mKey][mappedKey]) result[m2mKey][mappedKey] = {};
-                        if (!result[m2mKey][relativeKey]) result[m2mKey][relativeKey] = {};
-                        result[m2mKey][relativeKey][model.id] = {
+                        if (!result[m2mKey][key]) result[m2mKey][key] = {};
+                        if (!result[m2mKey][m2mModelAlias]) result[m2mKey][m2mModelAlias] = {};
+                        result[m2mKey][m2mModelAlias][model.id] = {
                             id: model.id,
-                            [mappedKey]: model[key].map(({ id }) => ({ id })),
+                            [key]: model[key].map(({ id }) => ({ id })),
                         };
                         model[key].forEach(({ id }) => {
                             // Only if we haven't added this models id to the m2m relationship...
-                            if (!getPropertyTree(result[m2mKey][mappedKey], [], id, relativeKey).find(({ id }) => id === model.id)) {
+                            if (!getPropertyTree(result[m2mKey][key], [], id, m2mModelAlias).find(({ id }) => id === model.id)) {
                                 // add this model to the m2m relationship.
-                                result[m2mKey][mappedKey][id] = {
+                                result[m2mKey][key][id] = {
                                     id,
-                                    [relativeKey]: [{ id: model.id }]
+                                    [m2mModelAlias]: [{ id: model.id }]
                                 };
                             }
                         });
-                    });
-
-                    if (!foundM2m) {
+                        flattenArrayOfModels(m2mRelatedModelName, model[key]);
+                    } else {
                         result[modelName][model.id][key] = model[key].map(({ id }) => ({ id }));
 
                         let mappedModelKey = getMappedKey(keyToModel, mappedKey, singulize(modelName));
@@ -76,24 +81,18 @@ export default (modelName, config={}) => data => {
                                 };
                             } else return m;
                         }));
-                    // TODO: NOT DRY
-                    } else {
-                        let mappedModelKey = getMappedKey(keyToModel, mappedKey, singulize(modelName));
-                        flattenArrayOfModels(mappedKey, model[key]);
                     }
                 // Else it's a plain object, just recurse
                 // Note: we only continue if we have data to add, otherwise we'd go infinite
                 } else {
                     if (Object.keys(model) >= 1 || !result[pluralize(mappedKey)] || !result[pluralize(mappedKey)][model[key].id]) {
-                        let mappedModelKey = getMappedKey(keyToModel, mappedKey, singulize(modelName));
-                        if (!model[key][mappedModelKey] && !model[key][modelName]) {
-                            flattenModel(pluralize(mappedKey), {
-                                [mappedModelKey]: { id: model.id },
-                                ...model[key],
-                            });
-                        } else {
-                            flattenModel(pluralize(mappedKey), model[key]);
-                        };
+                        //we have modelName, key (key could be alias), we need realKey, we need modelName's alias under realKey
+                        const realKey = pluralize(getPropertyTree(keyToModel, key, modelName, key));
+                        const modelNameAlias = (Object.entries(keyToModel[realKey] || []).find(([k, v]) => v === modelName) || [modelName])[0];
+                        flattenModel(realKey, {
+                            [modelNameAlias]: [{ id: model.id }],
+                            ...model[key],
+                        });
                     }
                     result[modelName][model.id][key] = { id: model[key].id };
                 }
