@@ -11,7 +11,7 @@ describe('forEachM2mRelation', () => {
             it('Should call the callback with the correct keys', () => {
                 forEachM2mRelation(m2mModelsKey1, manyToMany, (m2mKey, otherKey) => {
                     assert.strictEqual(m2mKey, m2mModelsModel);
-                    assert.strictEqual(otherKey, m2mModelsKey2);
+                    assert.strictEqual(otherKey, manyToMany.personsXhockeyTeams.persons);
                 });
             });
         });

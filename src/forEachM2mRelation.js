@@ -1,7 +1,12 @@
 export default (modelName, m2mModels, cb) => {
-    const m2mCount = Object.entries(m2mModels)
-        .filter(([m2mKey, modelKeys]) => modelKeys.includes(modelName));
-    m2mCount.forEach(([m2mKey, [key1, key2]]) => cb(m2mKey, key1 === modelName ? key2 : key1));
+    const m2mRelationships = Object.entries(m2mModels)
+        .filter(([m2mKey, relationships]) => Object.keys(relationships).includes(modelName));
+    m2mRelationships.forEach(
+        ([m2mKey, relationships]) => {
+            const otherModelName = Object.keys(relationships).find(k => k !== modelName);
+            cb(m2mKey, relationships[modelName], otherModelName);
+        }
+    );
 
-    return m2mCount.length > 0;
+    return m2mRelationships.length > 0;
 };

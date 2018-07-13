@@ -19,15 +19,17 @@ export default (modelName, model, state, config={}) => {
 
         Object.values(state[m2mModelKey][otherKey])
             .forEach(m => {
+                let modelNameAlias = manyToMany[m2mModelKey][otherKey];
                 let keyModel = result[m2mModelKey][otherKey];
                 keyModel[m.id] = {
                     id: m.id,
-                    [modelName]: state[m2mModelKey][otherKey][m.id][modelName].filter(({ id }) => id !== model.id),
+                    [modelNameAlias]: state[m2mModelKey][otherKey][m.id][modelNameAlias].filter(({ id }) => id !== model.id),
                 };
             });
     });
 
-    Object.keys(model).forEach(key => {
+    const fullModel = state[modelName][model.id];
+    Object.keys(fullModel).forEach(key => {
         let mappedKey = getPropertyTree(keyToModel, key, modelName, key);
 
         // if somehow a m2m key got into the object, then ignore it. We handle m2m automatically above.
@@ -36,26 +38,26 @@ export default (modelName, model, state, config={}) => {
         }
 
         // manyToOne
-        if (Array.isArray(model[key])) {
+        if (Array.isArray(fullModel[key])) {
             if (!result[mappedKey]) result[mappedKey] = {};
 
             // nullify the referenced model
-            model[key].forEach(({ id }) => {
+            fullModel[key].forEach(({ id }) => {
                 // modelName = 'companies' => 'company' (person['company'] = null)
                 result[mappedKey][id] = { id, [singulize(modelName)]: null };
             });
 
         // oneToMany
-        } else if (typeof model[key] === 'object') {
+        } else if (typeof fullModel[key] === 'object') {
             const pluralizedMappedKey = pluralize(mappedKey);
             if (!result[pluralizedMappedKey]) result[pluralizedMappedKey] = {};
 
-            const stateEntity = state[pluralizedMappedKey][model[key].id];
+            const stateEntity = state[pluralizedMappedKey][fullModel[key].id];
 
             // filter out the referenced model
-            result[pluralizedMappedKey][model[key].id] = {
-                id: model[key].id,
-                [modelName]: stateEntity[modelName].filter(v => v.id !== model.id),
+            result[pluralizedMappedKey][fullModel[key].id] = {
+                id: fullModel[key].id,
+                [modelName]: stateEntity[modelName].filter(v => v.id !== fullModel.id),
             };
         }
     });

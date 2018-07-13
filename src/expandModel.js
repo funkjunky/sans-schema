@@ -35,18 +35,13 @@ export default (modelName, model, state, deepness=2, config={}) => {
         });
 
         // Check for many to many
-        forEachM2mRelation(modelName, manyToMany, (m2mKey, key) => {
-            const modelAliases = getPropertyTree(keyToModel, false, modelName);
-            let modelKey = key;
-            if (modelAliases) {
-                const aliasKey = Object.entries(modelAliases).find(([alias, modelKey]) => modelKey === key);
-                if (aliasKey) modelKey = aliasKey[0];
-            }
+        forEachM2mRelation(modelName, manyToMany, (m2mKey, key, origKey) => {
+            const modelNameKey = Object.entries(manyToMany[m2mKey]).find(([k, v]) => k !== modelName)[1];
             // If an m2mKey exists, but is empty, then you can end up with one side having zero relations. This check is for that.
-            if (state[m2mKey][modelName][model.id]) {
-                newModel[modelKey] = state[m2mKey][modelName][model.id][key].map(model => _expandModel(key, model, deepness - 1));
+            if (state[m2mKey][modelNameKey][model.id]) {
+                newModel[key] = state[m2mKey][modelNameKey][model.id][key].map(model => _expandModel(origKey, model, deepness - 1));
             } else {
-                newModel[modelKey] = [];
+                newModel[key] = [];
             }
         });
 

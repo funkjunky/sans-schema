@@ -22,7 +22,7 @@ describe('flatten', () => {
     });
 
     it('Should flatten person correctly while using config.', () => {
-        const value = flatten(modelName, config)(personWithConfig);
+        const value = flatten(modelName, config)(person);
         assert.deepEqual(value, stateWithConfig);
     });
 });
