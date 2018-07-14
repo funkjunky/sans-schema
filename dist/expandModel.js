@@ -66,26 +66,21 @@ exports.default = function (modelName, model, state) {
         });
 
         // Check for many to many
-        (0, _forEachM2mRelation2.default)(modelName, manyToMany, function (m2mKey, key) {
-            var modelAliases = (0, _getPropertyTree2.default)(keyToModel, false, modelName);
-            var modelKey = key;
-            if (modelAliases) {
-                var aliasKey = Object.entries(modelAliases).find(function (_ref) {
-                    var _ref2 = _slicedToArray(_ref, 2),
-                        alias = _ref2[0],
-                        modelKey = _ref2[1];
+        (0, _forEachM2mRelation2.default)(modelName, manyToMany, function (m2mKey, key, origKey) {
+            var modelNameKey = Object.entries(manyToMany[m2mKey]).find(function (_ref) {
+                var _ref2 = _slicedToArray(_ref, 2),
+                    k = _ref2[0],
+                    v = _ref2[1];
 
-                    return modelKey === key;
-                });
-                if (aliasKey) modelKey = aliasKey[0];
-            }
+                return k !== modelName;
+            })[1];
             // If an m2mKey exists, but is empty, then you can end up with one side having zero relations. This check is for that.
-            if (state[m2mKey][modelName][model.id]) {
-                newModel[modelKey] = state[m2mKey][modelName][model.id][key].map(function (model) {
-                    return _expandModel(key, model, deepness - 1);
+            if (state[m2mKey][modelNameKey][model.id]) {
+                newModel[key] = state[m2mKey][modelNameKey][model.id][key].map(function (model) {
+                    return _expandModel(origKey, model, deepness - 1);
                 });
             } else {
-                newModel[modelKey] = [];
+                newModel[key] = [];
             }
         });
 

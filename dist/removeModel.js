@@ -49,17 +49,19 @@ exports.default = function (modelName, model, state) {
         result[m2mModelKey] = _defineProperty({}, otherKey, {});
 
         Object.values(state[m2mModelKey][otherKey]).forEach(function (m) {
+            var modelNameAlias = manyToMany[m2mModelKey][otherKey];
             var keyModel = result[m2mModelKey][otherKey];
             keyModel[m.id] = _defineProperty({
                 id: m.id
-            }, modelName, state[m2mModelKey][otherKey][m.id][modelName].filter(function (_ref) {
+            }, modelNameAlias, state[m2mModelKey][otherKey][m.id][modelNameAlias].filter(function (_ref) {
                 var id = _ref.id;
                 return id !== model.id;
             }));
         });
     });
 
-    Object.keys(model).forEach(function (key) {
+    var fullModel = state[modelName][model.id];
+    Object.keys(fullModel).forEach(function (key) {
         var mappedKey = (0, _getPropertyTree2.default)(keyToModel, key, modelName, key);
 
         // if somehow a m2m key got into the object, then ignore it. We handle m2m automatically above.
@@ -68,11 +70,11 @@ exports.default = function (modelName, model, state) {
         }
 
         // manyToOne
-        if (Array.isArray(model[key])) {
+        if (Array.isArray(fullModel[key])) {
             if (!result[mappedKey]) result[mappedKey] = {};
 
             // nullify the referenced model
-            model[key].forEach(function (_ref2) {
+            fullModel[key].forEach(function (_ref2) {
                 var id = _ref2.id;
 
                 // modelName = 'companies' => 'company' (person['company'] = null)
@@ -80,17 +82,17 @@ exports.default = function (modelName, model, state) {
             });
 
             // oneToMany
-        } else if (_typeof(model[key]) === 'object') {
+        } else if (_typeof(fullModel[key]) === 'object') {
             var pluralizedMappedKey = (0, _pluralize2.default)(mappedKey);
             if (!result[pluralizedMappedKey]) result[pluralizedMappedKey] = {};
 
-            var stateEntity = state[pluralizedMappedKey][model[key].id];
+            var stateEntity = state[pluralizedMappedKey][fullModel[key].id];
 
             // filter out the referenced model
-            result[pluralizedMappedKey][model[key].id] = _defineProperty({
-                id: model[key].id
+            result[pluralizedMappedKey][fullModel[key].id] = _defineProperty({
+                id: fullModel[key].id
             }, modelName, stateEntity[modelName].filter(function (v) {
-                return v.id !== model.id;
+                return v.id !== fullModel.id;
             }));
         }
     });
