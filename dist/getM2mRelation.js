@@ -10,9 +10,9 @@ exports.default = function (modelName, otherModelName, manyToMany) {
     var entry = Object.entries(manyToMany).find(function (_ref) {
         var _ref2 = _slicedToArray(_ref, 2),
             m2mKey = _ref2[0],
-            modelKeys = _ref2[1];
+            relationships = _ref2[1];
 
-        return modelKeys.includes(modelName) && modelKeys.includes(otherModelName);
+        return Object.keys(relationships).includes(modelName) && Object.keys(relationships).includes(otherModelName);
     });
 
     //return the key, which is the m2m key, ie. personsXhockeyTeams
