@@ -22,6 +22,13 @@ yarn add sans-schema
 import { flatten, expandModel, removeModel } from 'sans-schema';
 ```
 
+Disclaimer
+==========
+
+This library has been used in production, but error handling is dealt with outside the library. While we find limits and bugs with the system, I've kept error catching to a minimum inside the library code.
+
+In other words, don't use this library in production, unless you intend to contribute fault tolerence into the library. Please do contribute to the project if you like sans-schema enough to do this :).
+
 simplest use-case
 =================
 
