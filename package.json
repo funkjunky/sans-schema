@@ -8,7 +8,9 @@
     "test": "nyc mocha --require babel-core/register src/**/*.spec.js",
     "qt": "mocha --require babel-core/register src/**/*.spec.js",
     "build": "npx babel ./src -d ./dist --ignore *.spec.js,index.js,sampleData.js",
-    "publish": "npm run build && npm publish",
+    "publish-patch": "npm run build && npm version patch && git bump point && npm publish",
+    "publish-minor": "npm run build && npm version minor && git bump minor && npm publish",
+    "publish-major": "npm run build && npm version major && git bump major && npm publish",
     "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "babel": {
