@@ -53,6 +53,7 @@ What's the deal with loadNormalizedData action...
 =================================================
 
 flatten and removeModel return flattened data that should be merged in your reducers.
+By using a single action for all data changes you end up with a single render.
 Here is an example reducer:
 ```javascript
 // Note: You would call this when removing data as well, which well nullify references.
@@ -95,7 +96,7 @@ Also see [```sampleData.js``` for examples](https://github.com/funkjunky/sans-sc
     secondModelNames: { ... },
     thirdModelNames: { ... },
     // Note: modelNames doesn't reference thirdModelNames, yet it's related through this m2m object
-    modelNamesXthirdModelNames: {   //Note, the capital X. Otherwise identical model names
+    modelNamesXthirdModelNames: {   // This key can be anything you want.
         modelNames: {
             1: {
                 id: 1,  //Every model always has an id, even in m2m
@@ -125,7 +126,9 @@ Also see [```sampleData.js``` for examples](https://github.com/funkjunky/sans-sc
 Full example with React and Redux
 =================================
 
-~~ I'll post an example repos soon... ~~
+[Sans Schema demo](https://github.com/funkjunky/complete-sans-schema-demo)
+
+... Note: I well eventually make another demo with commit by commit tutorial on using Sans Schema...
 
 Function definitions
 ====================
@@ -169,7 +172,12 @@ Config
         }
     },
     manyToMany: {
-        m2mModelName: [modelName:string, secondModelName:string]
+        m2mModelName: [
+            {
+                modelName:string: secondModelNameAlias:string
+                secondModelName:string: modelNameAlias:string
+            }
+        ]
     },
 };
 ```
