@@ -7,18 +7,22 @@
   "scripts": {
     "test": "nyc mocha --require babel-core/register src/**/*.spec.js",
     "qt": "mocha --require babel-core/register src/**/*.spec.js",
-    "build": "npx babel ./src -d ./dist --ignore *.spec.js,index.js,sampleData.js",
+    "build": "npx babel ./src -d ./dist --ignore src/**/*.spec.js,src/index.js,src/sampleData.js",
     "publish-patch": "npm run build && npm version patch && git bump point && npm publish",
     "publish-minor": "npm run build && npm version minor && git bump minor && npm publish",
     "publish-major": "npm run build && npm version major && git bump major && npm publish",
     "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "babel": {
-    "presets": "env",
-    "plugins": [
-      "transform-object-rest-spread"
-    ]
+    "env": {
+      "test": {
+        "presets": [
+          "@babel/preset-env"
+        ]
+      }
+    }
   },
+  "browserslist": "> 1%, not dead",
   "keywords": [
     "normalizer",
     "schemaless",
@@ -28,11 +32,11 @@
   "author": "Jason McCarrell <jason.abz+npm@gmail.com> (http://www.jayeh.ca)",
   "license": "MIT",
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "chai": "^4.1.2",
-    "mocha": "^5.2.0",
-    "nyc": "^13.0.0"
+    "@babel/cli": "^7.7.4",
+    "@babel/core": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2",
+    "nyc": "^14.1.1"
   }
 }
