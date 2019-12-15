@@ -10,7 +10,8 @@
 Why?
 ====
 
-This library was written, because our team had no interest in writing more schema and configuration code than logic code in our application. Rather than defining every square inch of your data in a library domain specific way, you instead define what's unique about the relations in your data. See configuration below < config section and link coming soon >
+I wanted a single source of truth, and I wanted it without having to create schemas. You don't need to define every square inch of your data in a library domain specific way (ie. Typescript), instead just flatten and expand your data, nothing more.
+If you have many to many relationships, this is impossible to do without some configuration, so you will have to define which models are many-to-many relationships. There are many other configurations like aliases, but nothing is required. It's zero-config by nature. 
 
 Getting Started
 ===============
@@ -26,14 +27,22 @@ import { flatten, expandModel, removeModel } from 'sans-schema';
 Disclaimer
 ==========
 
-This library has been used in production, but error handling was dealt with outside the library. If you don't provide the required parameters in the correct format, the code well crash.
+This library has been used in production, but error handling is dealt with outside the library. If you don't provide the required parameters in the correct format, the code well crash (fail fast).
 
-In other words, don't use this library in production, unless you intend to contribute fault tolerence into the library. Please do contribute to the project if you like sans-schema enough to do this :).
+If you have mission critical code, feel free to wrap this code in exceptional handling. The code doesn't throw any exceptions currently. If anyone wants to contribute and add the throws, please feel free in a PR :)
 
 simplest use-case
 =================
 
 ```javascript
+import { configureStore } from 'redux-toolkit';
+import { mergeModelReducer, flatten, expandModel, removeModel, mergeNormalizedModels } from 'sans-schema';
+
+const store = configureStore({
+    companies: mergeModelReducer('companies'),
+    users: mergeModelReducer('users'),
+});
+
 const data = { id: 1, name: 'Jason', company: { id: 1, city: 'Montreal' } };
 
 const flatData = flatten('users')(data);
@@ -41,12 +50,12 @@ const expandedFlatData = expandModel('users', { id: 1 }, flatData);
 const flatDataSansCompanyWithId1 = removeModel('companies', data.company, flatData);
 
 // Using the data with Redux
-store.dispatch(loadNormalizedData(flatData));
+store.dispatch(mergeNormalizeModels(flatData));
 const expandedUser = expandModel('users', { id: 1 }, store.getState());
 
-// removing a model reference from all other models.
-store.dispatch(loadNormalizedData(flatDataSansCompanyWithId1));
-// ...then you're normal remove action.
+// removing a model reference from all other models. ie. user: { id: 123, company: { id: 1 } } becomes { id: 123, company: null }, and the same for all other models referencing company = { id: 1 }
+store.dispatch(mergeNormalizedModels(flatDataSansCompanyWithId1));
+// ...then your action to remove the model from it's slice
 store.disaptch(RemoveCompany({ id: 1 }));
 ```
 
@@ -55,27 +64,6 @@ What's the deal with loadNormalizedData action...
 
 flatten and removeModel return flattened data that should be merged in your reducers.
 By using a single action for all data changes you end up with a single render.
-Here is an example reducer:
-```javascript
-// Note: You would call this when removing data as well, which well nullify references.
-const loadNormalizedData = data => ({
-    type: 'LOAD_NORMALIZED',
-    data
-});
-const personsReducers = (state, action) => {
-    switch(action.type) {
-        case 'LOAD_NORMALIZED':
-            if (action.data.persons) {
-                //This is a naive impl. You should deep union data, giving priority to action
-                return {
-                    ...state,
-                    ...action.data.persons,
-                };
-            }
-        ...
-    }
-};
-```
 
 Format of flattened data:
 =========================
@@ -127,7 +115,7 @@ Also see [```sampleData.js``` for examples](https://github.com/funkjunky/sans-sc
 Full example with React and Redux
 =================================
 
-[Sans Schema demo](https://github.com/funkjunky/complete-sans-schema-demo)
+[Sans Schema demo](https://github.com/funkjunky/complete-sans-schema-demo) [OUTDATED, the library is easier to use now]
 
 ... Note: I well eventually make another demo with commit by commit tutorial on using Sans Schema...
 
@@ -157,6 +145,10 @@ Searches the state for references of model and nullifies them. This returns the 
 - `state : object` - `required` - Single source flattened data (ie. store.getState())
 - `config : `[`Config Object`](#config) - `optional` - Passed to every function, that defines custom relationships between models.
 **returns** `object` - flat single-source data
+
+Also, for Redux `mergeModelReducer(modelName)`, `mergeNormalizedModels(Action<{ models }>)`
+
+Also, `mergeData(oldObj, newObj)`, which is a generic merging function that uses immer. It probably exists somewhere, and if it doesn't... someone should publish it =P
 
 Config
 ======
