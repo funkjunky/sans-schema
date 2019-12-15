@@ -6,6 +6,7 @@
   "git": "https://github.com/funkjunky/sans-schema",
   "scripts": {
     "test": "nyc mocha --require @babel/register src/**/*.spec.js",
+    "test:watch": "nyc mocha -w --require @babel/register src/**/*.spec.js",
     "qt": "mocha --require @babel/register src/**/*.spec.js",
     "build": "npx babel ./src -d ./dist --ignore src/**/*.spec.js,src/index.js,src/sampleData.js",
     "publish-patch": "npm run build && npm version patch && git bump point && npm publish",
@@ -14,7 +15,9 @@
     "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "babel": {
-    "presets": ["@babel/preset-env"],
+    "presets": [
+      "@babel/preset-env"
+    ],
     "env": {
       "test": {
         "presets": [
@@ -39,7 +42,8 @@
     "@babel/register": "^7.7.4",
     "chai": "^4.2.0",
     "mocha": "^6.2.2",
-    "nyc": "^14.1.1"
+    "nyc": "^14.1.1",
+    "sinon": "^7.5.0"
   },
   "dependencies": {
     "immer": "^5.0.0"
