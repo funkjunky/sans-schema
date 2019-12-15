@@ -1,9 +1,18 @@
-import produce from 'immer';
-import { MERGE_NORMALIZED_MODELS } from './mergeNormalizedModels';
-export default (modelName => (state, action) => action.type === MERGE_NORMALIZED_MODELS && action.models[modelName] ? mergeData(state, action.models[modelName]) : state);
-export const mergeData = (oldModels, newModels) => produce(oldModels, draftState => Object.values(newModels).forEach(newModel => oldModels[newModel.id] = oldModels[newModel.id] // if old model exists, then merge new model into old model
-// TODO: make this recursive. (create an open source function for this if im successful)
-? produce(oldModels[newModel.id], draftModel => {
-  Object.entries(newModel).forEach(([key, value]) => draftModel[key] = value);
-}) // else just assign the new model
-: newModel));
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _mergeNormalizedModels = require("./mergeNormalizedModels");
+
+var _mergeData = require("./mergeData");
+
+var _default = function _default(modelName) {
+  return function (state, action) {
+    return action.type === _mergeNormalizedModels.MERGE_NORMALIZED_MODELS && action.models[modelName] ? (0, _mergeData.mergeData)(state, action.models[modelName]) : state;
+  };
+};
+
+exports.default = _default;
